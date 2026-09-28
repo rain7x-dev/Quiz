@@ -152,10 +152,8 @@ function renderLobby(v) {
     const b = document.createElement('button');
     b.className = 'chip' + (p.online ? '' : ' offline-p');
     b.textContent = p.name;
-    b.title = 'Remove ' + p.name;
-    b.addEventListener('click', () => {
-      if (confirm(`Remove "${p.name}" from the game?`)) socket.emit('host:kick', { playerId: p.id });
-    });
+    b.title = 'Rename or remove ' + p.name;
+    b.addEventListener('click', () => openPlayerDialog(p));
     return b;
   }));
   show('lobby');
@@ -202,6 +200,7 @@ function renderReveal(v) {
 function renderLeaderboard(v) {
   $('board').replaceChildren(...v.top.map((p) => {
     const li = document.createElement('li');
+    makeEditable(li, p);
     const rk = document.createElement('span');
     rk.className = 'rk';
     rk.textContent = '#' + p.rank;
@@ -238,6 +237,7 @@ function renderEnded(v) {
   }));
   $('resultsBody').replaceChildren(...v.results.map((p) => {
     const tr = document.createElement('tr');
+    makeEditable(tr, p);
     for (const val of [p.rank, p.name, p.score]) {
       const td = document.createElement('td');
       td.textContent = val;
@@ -247,6 +247,41 @@ function renderEnded(v) {
   }));
   show('ended');
 }
+
+// ---------- rename / remove players ----------
+
+let editing = null;
+
+function makeEditable(el, p) {
+  el.classList.add('editable');
+  el.title = 'Click to rename or remove';
+  el.addEventListener('click', () => openPlayerDialog(p));
+}
+
+function openPlayerDialog(p) {
+  editing = p;
+  $('renameInput').value = p.name;
+  $('renameError').textContent = '';
+  $('playerDialog').showModal();
+  $('renameInput').select();
+}
+
+$('renameForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (!editing) return;
+  socket.emit('host:rename', { playerId: editing.id, name: $('renameInput').value }, (res) => {
+    if (!res.ok) { $('renameError').textContent = res.error; return; }
+    $('playerDialog').close();
+  });
+});
+
+$('kickBtn').addEventListener('click', () => {
+  if (!editing || !confirm(`Remove "${editing.name}" from the game?`)) return;
+  socket.emit('host:kick', { playerId: editing.id });
+  $('playerDialog').close();
+});
+
+$('cancelDialog').addEventListener('click', () => $('playerDialog').close());
 
 // ---------- controls ----------
 
@@ -263,7 +298,7 @@ $('revealNext').addEventListener('click', next);
 $('boardNext').addEventListener('click', next);
 
 document.addEventListener('keydown', (e) => {
-  if (e.target.matches('input, textarea') || !view) return;
+  if (e.target.matches('input, textarea') || !view || $('playerDialog').open) return;
   if (![' ', 'Enter', 'ArrowRight'].includes(e.key)) return;
   const ok = (screen === 'lobby' && view.playerCount > 0) || screen === 'reveal' || screen === 'leaderboard';
   if (!ok) return;

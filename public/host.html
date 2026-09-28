@@ -56,7 +56,7 @@
         <div class="count"><span id="playerCount">0</span> players</div>
         <button id="startBtn" class="primary big">Start ▶</button>
       </div>
-      <p class="muted small">Click a name to remove that player. Press Space to start.</p>
+      <p class="muted small">Click a name to rename or remove that player. Press Space to start.</p>
       <div id="playerList" class="players"></div>
     </section>
 
@@ -97,6 +97,19 @@
       </div>
     </section>
   </main>
+
+  <dialog id="playerDialog" class="card narrow">
+    <form id="renameForm">
+      <h2>Edit player</h2>
+      <input id="renameInput" maxlength="20" placeholder="Player name" required>
+      <p id="renameError" class="error"></p>
+      <div class="dialog-actions">
+        <button type="submit" class="primary">Save name</button>
+        <button type="button" id="kickBtn" class="danger">Remove player</button>
+        <button type="button" id="cancelDialog" class="plain">Cancel</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/host.js"></script>

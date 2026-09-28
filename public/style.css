@@ -101,6 +101,16 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .ghost:hover { background: rgba(255, 255, 255, 0.26); }
 .big { font-size: 1.25rem; padding: 16px 30px; }
 .error { color: var(--bad); font-weight: 600; min-height: 1.3em; margin: 10px 0 0; }
+.danger { background: var(--bad); color: #fff; }
+.plain { background: #ececf2; color: var(--text); }
+dialog.card { border: 0; padding: 24px; }
+dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+dialog form { margin-top: 0; }
+.dialog-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.dialog-actions .primary { flex: 1; }
+.editable { cursor: pointer; }
+.editable:hover { outline: 3px solid rgba(255, 255, 255, 0.7); }
+.results tr.editable:hover { outline: 0; background: #f4f0ff; }
 .me { background: rgba(0, 0, 0, 0.25); padding: 6px 12px; border-radius: 20px; font-size: 0.95rem; }
 
 .offline {
@@ -144,7 +154,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .players { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-content: flex-start; }
 .chip { background: rgba(255, 255, 255, 0.95); color: var(--text); padding: 8px 14px; font-size: 1.05rem; }
 .chip.offline-p { opacity: 0.5; }
-.chip:hover { background: #ffd6dc; text-decoration: line-through; }
+.chip:hover { background: #e9ddff; }
 
 /* ---------- questions ---------- */
 .q-meta { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 1.15rem; gap: 12px; }

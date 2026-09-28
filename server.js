@@ -78,7 +78,7 @@ const games = new Map(); // pin -> game
 
 const newId = () => crypto.randomBytes(12).toString('hex');
 const cleanName = (s) => String(s || '').replace(/[\u0000-\u001f\u007f]/g, '').replace(/\s+/g, ' ').trim().slice(0, 20);
-const publicEntry = (p) => ({ rank: p.rank, name: p.name, score: p.score });
+const publicEntry = (p) => ({ id: p.id, rank: p.rank, name: p.name, score: p.score });
 const currentQ = (game) => game.questions[game.qIndex];
 
 function newPin() {
@@ -368,6 +368,23 @@ io.on('connection', (socket) => {
       s.emit('kicked');
     }
     if (game.sorted.length) rankPlayers(game);
+    sendHost(game);
+  });
+
+  socket.on('host:rename', (msg, ack) => {
+    const reply = typeof ack === 'function' ? ack : () => {};
+    const game = hostGame(socket);
+    const p = game && msg && game.players.get(msg.playerId);
+    if (!p) return reply({ ok: false, error: 'Player not found.' });
+    const name = cleanName(msg.name);
+    if (!name) return reply({ ok: false, error: 'Name cannot be empty.' });
+    const lower = name.toLowerCase();
+    if (lower !== p.name.toLowerCase() && game.names.has(lower)) return reply({ ok: false, error: 'That name is already taken.' });
+    game.names.delete(p.name.toLowerCase());
+    game.names.add(lower);
+    p.name = name;
+    reply({ ok: true });
+    if (p.socketId) io.to(p.socketId).emit('renamed', { name });
     sendHost(game);
   });
 

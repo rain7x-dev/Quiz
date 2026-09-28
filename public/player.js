@@ -92,7 +92,17 @@ if (urlPin && !session) $('nameInput').focus();
 
 // ---------- game states ----------
 
+let lastScore = 0;
+
+// The host renamed us: update the name everywhere without disturbing the current screen.
+socket.on('renamed', ({ name }) => {
+  if (session) { session.name = name; saveSession(); }
+  $('lobbyName').textContent = name;
+  $('me').textContent = `${name} · ${lastScore} pts`;
+});
+
 socket.on('state', (s) => {
+  lastScore = s.score;
   $('me').textContent = `${s.name} · ${s.score} pts`;
   $('me').classList.remove('hidden');
   stopTimer();
