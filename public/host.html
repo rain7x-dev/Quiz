@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Quiz Host</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="host">
+  <div id="offline" class="offline hidden">Connection lost, reconnecting…</div>
+  <header class="topbar">
+    <div class="brand">Live Quiz · Host</div>
+    <div class="topbar-right">
+      <span id="hostInfo" class="me hidden"></span>
+      <button id="fullscreenBtn" class="ghost">Fullscreen</button>
+      <button id="endBtn" class="ghost hidden">End game</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="s-login" class="screen">
+      <div class="card narrow">
+        <h1>Host login</h1>
+        <form id="loginForm">
+          <input id="password" type="password" placeholder="Host password" autocomplete="current-password" required>
+          <button class="primary big" type="submit">Continue</button>
+        </form>
+        <p id="loginError" class="error"></p>
+      </div>
+    </section>
+
+    <section id="s-setup" class="screen hidden">
+      <div class="card wide">
+        <h1>Questions</h1>
+        <p class="muted">Edit here if needed. <code>answer</code> is the position of the correct option (1–4), <code>time</code> is in seconds.</p>
+        <form id="setupForm">
+          <textarea id="questionsInput" spellcheck="false"></textarea>
+          <button id="createBtn" class="primary big" type="submit">Create game</button>
+        </form>
+        <p id="setupError" class="error"></p>
+      </div>
+    </section>
+
+    <section id="s-lobby" class="screen hidden">
+      <div class="lobby-top">
+        <div class="join-box">
+          <div class="join-label">Scan the QR code or go to</div>
+          <div id="joinUrl" class="join-url"></div>
+          <div class="join-label">Game PIN</div>
+          <div id="pin" class="pin"></div>
+        </div>
+        <img id="qr" class="qr" alt="QR code to join the quiz">
+      </div>
+      <div class="lobby-bar">
+        <div class="count"><span id="playerCount">0</span> players</div>
+        <button id="startBtn" class="primary big">Start ▶</button>
+      </div>
+      <p class="muted small">Click a name to remove that player. Press Space to start.</p>
+      <div id="playerList" class="players"></div>
+    </section>
+
+    <section id="s-question" class="screen hidden">
+      <div class="q-meta"><span id="qCounter"></span><span id="qAnswered"></span></div>
+      <h1 id="qText" class="q-text"></h1>
+      <div class="q-middle"><div id="qTimer" class="timer"></div></div>
+      <div id="qOptions" class="options"></div>
+      <div class="actions"><button id="skipBtn" class="ghost">Stop timer and reveal ⏭</button></div>
+    </section>
+
+    <section id="s-reveal" class="screen hidden">
+      <div class="q-meta"><span id="rCounter"></span><span id="rAnswered"></span></div>
+      <h1 id="rText" class="q-text"></h1>
+      <div id="rBars" class="bars"></div>
+      <div id="rOptions" class="options"></div>
+      <div class="actions"><button id="revealNext" class="primary big">Leaderboard ▶</button></div>
+    </section>
+
+    <section id="s-leaderboard" class="screen hidden">
+      <h1 style="text-align:center">Leaderboard</h1>
+      <ol id="board" class="board"></ol>
+      <div class="actions"><button id="boardNext" class="primary big">Next question ▶</button></div>
+    </section>
+
+    <section id="s-ended" class="screen hidden">
+      <h1 style="text-align:center">🏆 Winners 🏆</h1>
+      <div id="podium" class="podium"></div>
+      <div class="actions">
+        <button id="csvBtn" class="primary">Download results (CSV)</button>
+        <button id="newGameBtn" class="ghost">New game</button>
+      </div>
+      <div class="results-wrap">
+        <table class="results">
+          <thead><tr><th>Rank</th><th>Name</th><th>Score</th></tr></thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/host.js"></script>
+</body>
+</html>

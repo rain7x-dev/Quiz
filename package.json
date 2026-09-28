@@ -1,0 +1,22 @@
+{
+  "name": "quiz-live",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Live Kahoot-style quiz for a college event",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "loadtest": "node loadtest.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.1"
+  }
+}
